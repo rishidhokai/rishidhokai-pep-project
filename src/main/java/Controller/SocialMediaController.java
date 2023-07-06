@@ -1,17 +1,15 @@
 package Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import Model.Account;
+import Model.Message;
+
+import Service.AccountService;
+import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-
-//{
-    import Model.Account;
-    import Model.Message;
-    import Service.AccountService;
-    import Service.MessageService;
-    import com.fasterxml.jackson.core.JsonProcessingException;
-    import com.fasterxml.jackson.databind.ObjectMapper;
-    
-    import java.util.List;
 
 //}
 
@@ -21,6 +19,13 @@ import io.javalin.http.Context;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+    AccountService accountService;
+    MessageService messageService;
+
+    public SocialMediaController(){
+        this.accountService = new AccountService();
+        this.messageService = new MessageService();
+    }
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -28,7 +33,7 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
-        app.post("/register", this::exampleHandler);
+        app.post("/register", this::postUserRegistrationHandler);
         app.post("/login", this::exampleHandler);
 
         app.post("/messages", this::exampleHandler);
@@ -54,9 +59,10 @@ public class SocialMediaController {
     private void postUserRegistrationHandler(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(ctx.body(), Account.class);
-        Author addedAuthor = authorService.addAuthor(author);
-        if(addedAuthor!=null){
-            ctx.json(mapper.writeValueAsString(addedAuthor));
+        Account addedAccount = accountService.registerUser(account);
+        if(addedAccount!=null){
+            ctx.status(200);
+            ctx.json(mapper.writeValueAsString(addedAccount));
         }else{
             ctx.status(400);
         }
