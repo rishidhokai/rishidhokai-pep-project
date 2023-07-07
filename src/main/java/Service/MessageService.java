@@ -4,9 +4,6 @@ import DAO.MessageDAO;
 import Model.Message;
 
 import java.util.List;
-
-import static org.mockito.ArgumentMatchers.nullable;
-
 import java.util.*;
 
 
@@ -36,18 +33,18 @@ public class MessageService {
         return messageDAO.getMessageById(messageId);
     }
 
-    public Message deleteMessageById(String messageId) {
+    public Message deleteMessageById(int messageId) {
         return messageDAO.deleteMessageById(messageId);
     }
 
-    public Message updateMessage(String messageId, Message updatedMessage) {
+    public Message updateMessage(int messageId, Message updatedMessage) {
+               
         return (!updatedMessage.getMessage_text().isEmpty() && updatedMessage.getMessage_text().length() <= 254) ? messageDAO.updateMessage(messageId, updatedMessage) : null; //OR updatED
     }
 
-    public List<Message> getMessagesByAccountId(String accountId) {
+    public List<Message> getMessagesByAccountId(int accountId) {
         return messageDAO.getMessagesByAccountId(accountId);
     }
 
 
 }
-
