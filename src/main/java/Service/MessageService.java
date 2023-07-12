@@ -37,8 +37,8 @@ public class MessageService {
         return messageDAO.deleteMessageById(messageId);
     }
 
-    public Message updateMessage(int messageId, Message updatedMessage) {
-               
+    public Message updateMessage(int messageId, Message updatedMessage) {       
+        // System.out.println("TESTING OOGA BOOGA NOW");
         return (!updatedMessage.getMessage_text().isEmpty() && updatedMessage.getMessage_text().length() <= 254) ? messageDAO.updateMessage(messageId, updatedMessage) : null; //OR updatED
     }
 

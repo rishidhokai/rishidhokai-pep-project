@@ -19,16 +19,31 @@ public class MessageDAO {
         Connection conn = ConnectionUtil.getConnection();
         try {
             String sql = "SELECT * FROM message";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery(sql);
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
+            // PreparedStatement ps = conn.prepareStatement(sql);
+            // ResultSet rs = ps.executeQuery(sql);
 
             while (rs.next()) {
+                // Message message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch"));
+
+                
                 int messageId = rs.getInt("message_id");
+                // System.out.println("OOGA BOOGA Message ID: " + messageId);
+
                 int postedBy = rs.getInt("posted_by");
+                // System.out.println("Posted By: " + postedBy);
+
                 String messageText = rs.getString("message_text");
+                // System.out.println("Message text: " + messageText);
+
                 long timePostedEpoch = rs.getLong("time_posted_epoch");
+                // System.out.println("TP Epoch: " + timePostedEpoch);
+
+
 
                 Message message = new Message(messageId, postedBy, messageText, timePostedEpoch);
+                // System.out.println("Here is a message: " + message.toString());
                 messages.add(message);
             }
         } catch (SQLException e) {
@@ -36,7 +51,7 @@ public class MessageDAO {
         }
         return messages;
     }
-    
+
     public Message createMessage(Message message) {
         Connection connection = ConnectionUtil.getConnection();
         try {
@@ -105,8 +120,10 @@ public class MessageDAO {
 
     public Message updateMessage(int messageId, Message updatedMessage) {
         Connection conn = ConnectionUtil.getConnection();
+        
         try {
             String sql = "UPDATE message SET message_text = ? WHERE message_id = ?";
+            // Statement s = conn.createStatement();
             PreparedStatement ps = conn.prepareStatement(sql);
 
             ps.setString(1, updatedMessage.getMessage_text());            
@@ -114,6 +131,9 @@ public class MessageDAO {
             
             int rowsUpdated = ps.executeUpdate();
             if(rowsUpdated > 0 ) {
+                // System.out.println("OOGA BOOGAAAAAAAA");
+                // System.out.println(updatedMessage.toString());
+                // System.out.println("Get OOGA BOOGAAAAAAAADDDDDDDDDDDD");
                 return updatedMessage;
             }
         } catch (SQLException e) {

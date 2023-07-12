@@ -27,17 +27,17 @@ public class SocialMediaController {
     
     public Javalin startAPI() {
         Javalin app = Javalin.create();
-        app.post("/register", this::postUserRegistrationHandler); //works
-        app.post("/login", this::postLoginHandler); //works
+        app.post("/register", this::postUserRegistrationHandler); 
+        app.post("/login", this::postLoginHandler); 
 
-        app.post("/messages", this::createMessageHandler); //works
-        app.get("/messages", this::getAllMessagesHandler); //BROKEN 1/2
+        app.post("/messages", this::createMessageHandler); 
+        app.get("/messages", this::getAllMessagesHandler); 
 
-        app.get("/messages/{message_id}", this::getMessByIdHandler); //BROKEN
-        app.delete("/messages/{message_id}", this::deleteMessByIdHandler); //BROKEN
-        app.patch("/messages/{message_id}", this::updateMessageHandler); //works 4/5
+        app.get("/messages/{message_id}", this::getMessByIdHandler); 
+        app.delete("/messages/{message_id}", this::deleteMessByIdHandler);
+        app.patch("/messages/{message_id}", this::updateMessageHandler); //Broken :/
 
-        app.get("accounts/{account_id}/messages", this::getMessagesFromAccIdHandler); //BROKEN
+        app.get("accounts/{account_id}/messages", this::getMessagesFromAccIdHandler);
 
         return app;
     }
@@ -78,16 +78,14 @@ public class SocialMediaController {
         }
     }
 
-    // private void getAllMessagesHandler(Context ctx) throws JsonProcessingException {
-        // List<Message> messages = messageService.getAllMessages();
-        // ObjectMapper mapper = new ObjectMapper();
-        // String json = mapper.writeValueAsString(messages);
-        // ctx.result(json).status(200);
-        // ctx.json(new ArrayList<Message>()).status(200);
-    // }
+    private void getAllMessagesHandler(Context ctx) throws JsonProcessingException {
+        List<Message> messages = messageService.getAllMessages();
+        // System.out.println("I WANNA PRINT SHI: ");
+        // System.out.println(messages.toString());
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(messages);
+        ctx.result(json).status(200);
 
-    private void getAllMessagesHandler(Context ctx) { //200 only
-        ctx.json(messageService.getAllMessages()).status(200);    
     }
     
     private void getMessByIdHandler(Context ctx) { //200 only
@@ -118,13 +116,13 @@ public class SocialMediaController {
         Message message = mapper.readValue(ctx.body(), Message.class);
         Message updatedMessage = messageService.updateMessage(messageId, message);
         if (updatedMessage != null) {
-            // ctx.result(mapper.writeValueAsString(updatedMessage)).status(200);
-            ctx.status(200);
             ctx.json(mapper.writeValueAsString(updatedMessage));
+            ctx.result(mapper.writeValueAsString(updatedMessage)).status(200);
         } else {
             ctx.status(400);
         }    
     }
+
     private void getMessagesFromAccIdHandler(Context ctx) throws JsonMappingException, JsonProcessingException {
         int accountId = ctx.pathParamAsClass("account_id", Integer.class).get();
         ctx.json(messageService.getMessagesByAccountId(accountId));
